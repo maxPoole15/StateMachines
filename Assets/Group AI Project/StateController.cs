@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class StateController : MonoBehaviour {
 
+    public GameObject navPointsParent;
     public State currentState;
     public GameObject[] navPoints;
     public GameObject enemyToChase;
@@ -14,11 +16,34 @@ public class StateController : MonoBehaviour {
     public Renderer[] childrenRend;
     public GameObject[] enemies;
     public float detectionRange = 5;
+    public GameObject wanderP;
+    public GameObject newNavPoint;
 
+
+    void Start()
+    {
+        navPoints = GameObject.FindGameObjectsWithTag("navpoint");
+        ai = GetComponent<UnityStandardAssets.Characters.ThirdPerson.AICharacterControl>();
+        childrenRend = GetComponentsInChildren<Renderer>();
+        SetState(new PatrolState(this));
+    }
+
+    void Update()
+    {
+        currentState.CheckTransitions();
+        currentState.Act();
+    }
     public Transform GetNextNavPoint()
     {
         navPointNum = (navPointNum + 1) % navPoints.Length;
         return navPoints[navPointNum].transform;
+    }
+    public Transform GetWanderPoint()
+    {
+        //This could be done more efficeintly without introducing a empty game object
+        Vector3 wanderPoint = new Vector3(Random.Range(-2f, 2f), 1.5f, Random.Range(-2f, 2f));
+        GameObject go = Instantiate(wanderP, wanderPoint, Quaternion.identity);
+        return go.transform;
     }
     public Vector3 GetRandomPoint()
     {
@@ -28,11 +53,12 @@ public class StateController : MonoBehaviour {
 
     public void AddNavPoint(Vector3 pos)
     {
-        GameObject go = Instantiate(navPoints[0], pos, Quaternion.identity);
-        go.transform.tag = "navpoint";
-        navPoints = null;
+        GameObject go = Instantiate(newNavPoint, pos, Quaternion.identity);
+        go.transform.SetParent(navPointsParent.transform);
         navPoints = GameObject.FindGameObjectsWithTag("navpoint");
-    } 
+        
+
+    }
 
     public void ChangeColor(Color color)
     {
@@ -51,7 +77,7 @@ public class StateController : MonoBehaviour {
         {
             foreach (GameObject g in enemies)
             {
-                if(Vector3.Distance(g.transform.position, transform.position) < detectionRange)
+                if (Vector3.Distance(g.transform.position, transform.position) < detectionRange)
                 {
                     enemyToChase = g;
                     return true;
@@ -60,17 +86,7 @@ public class StateController : MonoBehaviour {
         }
         return false;
     }
-	void Start () {
-        navPoints = GameObject.FindGameObjectsWithTag("navpoint");
-        ai = GetComponent<UnityStandardAssets.Characters.ThirdPerson.AICharacterControl>();
-        childrenRend = GetComponentsInChildren<Renderer>();
-        SetState(new PatrolState(this));
-	}
-	
-	void Update () {
-        currentState.CheckTransitions();
-        currentState.Act();
-	}
+
     public void SetState(State state)
     {
         if(currentState != null)

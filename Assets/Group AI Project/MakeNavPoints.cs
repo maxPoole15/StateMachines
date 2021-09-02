@@ -9,13 +9,14 @@ public class MakeNavPoints : State {
     int numPointsMade = 0;
     public override void CheckTransitions()
     {
-        if (maxPoints < numPointsMade)
-        {
-            stateController.SetState(new PatrolState(stateController));
-        }
+      
         if (stateController.CheckIfInRange("Player"))
         {
             stateController.SetState(new ChaseState(stateController));
+        }
+        if (maxPoints < numPointsMade)
+        {
+            stateController.SetState(new PatrolState(stateController));
         }
     }
     public override void Act()

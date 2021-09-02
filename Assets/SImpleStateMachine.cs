@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class SImpleStateMachine : MonoBehaviour
 {
+    /// <summary>
+    /// This class has a few bugs in it and the basic structure of a one class
+    /// State machine with a switch statement enum implementation.  It is only 
+    /// here as an example of an innefficeint and inflexible way of making a state
+    /// machine, I don't recommend this approach.  If you want for extra credit try 
+    /// and get it working!
+    /// </summary>
     public enum State
     {
         Sleep,
