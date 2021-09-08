@@ -38,7 +38,7 @@ public class WanderState : State
         stateController.destination = stateController.GetWanderPoint();
         if (stateController.ai.agent != null)
         {
-            stateController.ai.agent.speed = .2f;
+            stateController.ai.agent.speed = 1f;
         }
         stateController.ai.SetTarget(stateController.destination);
         stateController.ChangeColor(Color.cyan);

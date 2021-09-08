@@ -24,6 +24,6 @@ public class ChaseState : State {
     public override void OnStateEnter()
     {
         stateController.ChangeColor(Color.red);
-        stateController.ai.agent.speed = .5f;
+        stateController.ai.agent.speed = .75f;
     }
 }
